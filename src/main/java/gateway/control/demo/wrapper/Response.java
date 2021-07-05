@@ -22,6 +22,14 @@ public class Response {
         this.hasError =  true;
     }
 
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
     public Object getResponseBody() {
         return responseBody;
     }

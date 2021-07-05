@@ -124,7 +124,7 @@ public class PeripheralController {
                                          @PathVariable(value = "id") Integer id) {
         try {
             //pre-conditions
-            if(peripheral == null || peripheral.getId() == null)
+            if(peripheral == null || id == null)
                 return ResponseEntity.badRequest()
                         .body(new Response(HttpStatus.BAD_REQUEST, Message.ERROR_WITH_PARAMETERS));
 

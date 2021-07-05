@@ -19,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -187,6 +189,44 @@ public class PeripheralControllerTest {
 
         this.mockMvc.perform(delete("/peripheral/delete/1"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getById() throws Exception {
+        Peripheral peripheral = new Peripheral();
+        peripheral.setId(1);
+        peripheral.setGatewayId(1);
+        peripheral.setUid(BigInteger.valueOf(1000));
+        peripheral.setVendor("Optical");
+
+        Mockito.when(peripheralRepository.findFirstById(1)).thenReturn(peripheral);
+
+        mockMvc.perform(get("/peripheral/getById/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hasError").value(false))
+                .andExpect(jsonPath("$.responseBody").exists())
+                .andExpect(jsonPath("$.responseBody.id").value(1));
+    }
+
+    @Test
+    public void findAllWithElement() throws Exception {
+        Peripheral peripheral = new Peripheral();
+        peripheral.setId(1);
+        peripheral.setGatewayId(1);
+        peripheral.setUid(BigInteger.valueOf(1000));
+        peripheral.setVendor("Optical");
+
+        List<Peripheral> peripherals = Arrays.asList(peripheral);
+
+        Mockito.when(peripheralRepository.findAllByGatewayIdOrderByCreatedDateDesc(1)).thenReturn(peripherals);
+
+        mockMvc.perform(get("/peripheral/byGatewayId/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hasError").value(false))
+                .andExpect(jsonPath("$.responseBody").exists())
+                .andExpect(jsonPath("$.responseBody").isArray());
     }
 
     public static String asJsonString(final Object obj) {
